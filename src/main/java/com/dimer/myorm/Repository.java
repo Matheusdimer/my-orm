@@ -381,7 +381,7 @@ public class Repository<T extends Entity<I>, I> implements RepositoryOperation<T
             }
 
             final Repository<? extends Entity<?>, ?> repository = new Repository<>((Class<Entity<Object>>) fieldType, connection);
-            final List<? extends Entity<?>> entities = repository.saveOrUpdateAll(castToEntitiesList(list));
+            final List<? extends Entity<?>> entities = repository.saveAll(castToEntitiesList(list));
 
             field.set(entity, entities);
 
@@ -577,9 +577,7 @@ public class Repository<T extends Entity<I>, I> implements RepositoryOperation<T
             throw new RuntimeException("Error on find unique result of " + type.getSimpleName(), e);
         }
     }
-
-    @Override
-    public T save(T entity) {
+    public T create(T entity) {
         int index = 1;
 
         try {
@@ -628,7 +626,7 @@ public class Repository<T extends Entity<I>, I> implements RepositoryOperation<T
         return entities.stream().map(this::save).collect(Collectors.toList());
     }
 
-    public T saveOrUpdate(T entity) {
+    public T save(T entity) {
         if (isNull(entity)) {
             return null;
         }
@@ -637,14 +635,9 @@ public class Repository<T extends Entity<I>, I> implements RepositoryOperation<T
             return this.update(entity);
         }
 
-        return this.save(entity);
+        return this.create(entity);
     }
 
-    private List<T> saveOrUpdateAll(List<T> entities) {
-        return entities.stream().map(this::saveOrUpdate).collect(Collectors.toList());
-    }
-
-    @Override
     public T update(T entity) {
         int index = 1;
 
@@ -680,11 +673,6 @@ public class Repository<T extends Entity<I>, I> implements RepositoryOperation<T
         } catch (Exception e) {
             throw new RuntimeException("Error on update entity " + type.getSimpleName(), e);
         }
-    }
-
-    @Override
-    public List<T> updateAll(List<T> entities) {
-        return entities.stream().map(this::update).collect(Collectors.toList());
     }
 
     @Override

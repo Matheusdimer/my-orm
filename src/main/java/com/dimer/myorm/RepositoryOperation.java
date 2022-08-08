@@ -11,10 +11,6 @@ public interface RepositoryOperation<T extends Entity<I>, I> {
 
     List<T> saveAll(List<T> entities);
 
-    T update(T entity);
-
-    List<T> updateAll(List<T> entities);
-
     boolean delete(T entity);
 
     boolean deleteById(I id);
